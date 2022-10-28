@@ -16,6 +16,7 @@
 package com.example.forage.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -74,7 +75,12 @@ class AddForageableFragment : Fragment() {
 
             // TODO: Observe a Forageable that is retrieved by id, set the forageable variable,
             //  and call the bindForageable method
-            forageable = viewModel.getForageable(id).value!!
+            viewModel.getForageable(id).observe(viewLifecycleOwner){
+                if (it != null){
+                    forageable = it
+                    bindForageable(forageable)
+                }
+            }
             binding.deleteBtn.visibility = View.VISIBLE
             binding.deleteBtn.setOnClickListener {
                 deleteForageable(forageable)
@@ -87,6 +93,7 @@ class AddForageableFragment : Fragment() {
     }
 
     private fun deleteForageable(forageable: Forageable) {
+
         viewModel.deleteForageable(forageable)
         findNavController().navigate(
             R.id.action_addForageableFragment_to_forageableListFragment
